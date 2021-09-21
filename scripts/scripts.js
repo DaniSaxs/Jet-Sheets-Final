@@ -11,7 +11,7 @@ const firebaseConfig = {
     measurementId: "G-J71VD145J8"
 };
 
-console.warn('v4');
+console.warn('v5');
 
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
@@ -172,7 +172,7 @@ function all(cantF){
                 for (let i = 0; i < sheets.length - 1; i++) {
                     sheets[i].flag = true;
                     sheets[i].status = 0;
-                    sheets[i].validate = true;
+                    sheets[i].validate = false;
                     $(`#${sheets[i].id}`).removeClass('buttonClick');
                     $(`#${sheets[i].id}`).attr(`flag${sheets[i].id}`, "true");
                 }
@@ -482,17 +482,17 @@ function all(cantF){
                     sheetsFire2[i].status = database[i].status;
                     sheetsFire2[i].validate = database[i].validate;
                     flagAll = true;
-                }else if(database[i].status === 0 && sheetsFire2[i].status === 1 && database[i].validate === false){
+                }else if(database[i].status === 0 && sheetsFire2[i].status === 1 && sheetsFire2[i].validate === false){
                     flagAll = false;
                     sheets[i] = sheetsFire2[i];
                     selectSheets(i);
                 }
-                // if(database[i].validate === true){
-                //     sheetsFire2[i].flag = database[i].flag;
-                //     sheetsFire2[i].status = database[i].status;
-                //     sheetsFire2[i].validate = false;
-                //     flagAll = true;
-                // }
+                if(database[i].validate === true){
+                    sheetsFire2[i].flag = database[i].flag;
+                    sheetsFire2[i].status = database[i].status;
+                    sheetsFire2[i].validate = database[i].validate;
+                    flagAll = true;
+                }
             }
             if(flagAll){
                 sheetsFire2[database.length - 1].counter = database[database.length - 1].count;
