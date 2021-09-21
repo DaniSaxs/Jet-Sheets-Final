@@ -11,7 +11,7 @@ const firebaseConfig = {
     measurementId: "G-J71VD145J8"
 };
 
-console.warn('v5');
+console.warn('v6');
 
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
@@ -158,36 +158,62 @@ function all(cantF){
 
         Swal.fire({
             title: 'Estás seguro(a)?',
-            text: "No podrás revertir esto!",
+            text: "Si tienes Base de Datos también se eliminará",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
             confirmButtonText: 'Sí, Eliminar!',
             cancelButtonText: 'Cancelar!'
-        }).then((result) => {
+        }).then(async (result) => {
             if (result.isConfirmed) {
 
+                Swal.fire({
+                    title: 'Eliminando',
+                    html: `<p id="deleteText">No hay Base de Datos, por lo tanto, sólo se está eliminando la Tabla!</p>`,
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading()
+                    }
+                });
+
+                const getValues = await getDocs(collection(db, "values"));
+
                 sheets = database;
+                var sheetsRemove = {};
                 for (let i = 0; i < sheets.length - 1; i++) {
                     sheets[i].flag = true;
                     sheets[i].status = 0;
                     sheets[i].validate = false;
                     $(`#${sheets[i].id}`).removeClass('buttonClick');
                     $(`#${sheets[i].id}`).attr(`flag${sheets[i].id}`, "true");
+                    sheetsRemove[i] = sheets[i];
                 }
                 sheets[database.length - 1].count = 0;
                 localStorage.setItem('sheets',JSON.stringify(sheets));
                 $('#counter').html(sheets[database.length - 1].count);
                 $('#output').html(database.length - counter.count - 1);
+
+                var id = "";
+
+                if (getValues.size > 0) {
+                    $('#deleteText').html("Se está eliminando la Tabla y la Base de datos!");
+                    getValues.forEach(doc => {
+                        id = doc.id;
+                    });
+                    const docRef = await doc(db, "values", `${id}`);
+                    await updateDoc(docRef, sheetsRemove);
+                }
+
                 Swal.fire({
                     title: 'Eliminado!',
-                    text : 'La tabla ha sido eliminada satisfactoriamente',
+                    html : 'Información eliminada satisfactoriamente!',
                     icon : 'success',
                     timer: 1500,
                     showConfirmButton: false
                 });
             }
+
         });
 
     });
