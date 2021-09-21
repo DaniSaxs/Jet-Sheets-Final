@@ -11,6 +11,8 @@ const firebaseConfig = {
     measurementId: "G-J71VD145J8"
 };
 
+console.warn('v4');
+
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 const db = getFirestore();
