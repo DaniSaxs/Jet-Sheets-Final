@@ -127,7 +127,7 @@ function all(cantF){
             $(`#${sheets[i].id}`).removeClass('buttonClick');
             sheets[i].flag = true;
             sheets[i].status = 0;
-            sheets[i].validate = true;
+            // sheets[i].validate = true;
             sheets[database.length - 1].count -= 1;
             $(`#${sheets[i].id}`).attr(`flag${sheets[i].id}`, "true")
         }
