@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta name="Description" content="Enter your description here"/>
+<link rel="icon" type="image/ico" href="./Assets/logo.ico">
+<link rel="stylesheet" href="./node_lib/bootswatch/dist/flatly/bootstrap.min.css">
+<link rel="stylesheet" href="./node_lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="./node_lib/sweetalert2/dist/sweetalert2.min.css">
+<link rel="stylesheet" href="./node_lib/hover.css/css/hover-min.css">
+<link rel="stylesheet" href="./styles/styles.css">
+<title>Jet Sheets</title>
+</head>
+<body>
+
+    <!-- <div class="bg-image"></div> -->
+
+    <div class="w-100 d-flex mt-4 justify-content-center position-relative">
+        <a href="./index.html" title="Inicio" class="logo position-absolute hvr-grow-rotate d-flex justify-content-center align-items-center" style="width: 60px; height: 60px; border: 2px solid white; overflow: hidden; border-radius: 100%; box-shadow: 0 0 10px 1px rgba(0,0,0,0.5);">
+            <img src="./Assets/logo.ico"style="width: 140%">
+        </a>
+    </div>
+
+    <div class="container px-4">
+        <div class="row">
+            <div class="col-md-5 d-flex justify-content-center align-items-center">
+                <button class="btn btn-danger hvr-wobble-horizontal" id="removeAll"><i class="fa fa-trash"></i> Eliminar Todo</button>
+                <button class="btn btn-success hvr-wobble-skew mx-2" id="downloadButton"><i class="fa fa-download"></i> Crear Txt</button>
+                <label for="inputfile" class="btn btn-info hvr-wobble-skew"><i class="fa fa-file-text"></i> Importar Txt</label>
+                <input class="btn btn-info d-none" type="file" accept=".txt" name="inputfile" id="inputfile">
+            </div>
+            <div class="col-md-4 offset-md-3 d-flex justify-content-center align-items-center">
+                <button class="btn btn-info hvr-icon-spin" id="dbSync"><i class="fa fa-refresh hvr-icon"></i> Sincronizar</button>
+                <button class="btn btn-primary m-4 hvr-wobble-skew" data-bs-toggle="modal" data-bs-target="#newForm"><i class="fa fa-plus-circle"></i> Nuevo</button>
+                <h5 class="m-0 text-white"><i class="fa fa-check-circle text-primary" style="text-shadow: 0 0 10px rgba(255,255,255,1);"></i> : <span style="text-shadow: 0 0 10px rgba(0,0,0,1);" id="counter"></span></h5>
+            </div>
+        </div>
+        <div class="w-100 d-flex justify-content-center">
+            <div class="d-flex justify-content-center align-items-center flex-column position-absolute">
+                <table class="table table-bordered mt-2">
+                    <tbody id="tableJ">
+                      
+                    </tbody>
+                </table>
+    
+                <div class="text-center">
+                    <p class="w-100 text-white" style="text-shadow: 0 0 10px black;">Te faltan <span id="output"></span> Láminas para llenar el Álbum</p>
+                </div>
+                
+            </div>
+        </div>
+        <!-- Modal Form New-->
+        <div class="modal fade" id="newForm" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel"><i class="fa fa-plus"></i> Insertar Nuevo</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body container">
+                    <div class="w-100 d-flex justify-content-around flex-row">
+                        <div class="form-check mr-2">
+                            <label class="form-check-label">
+                                <input type="radio" class="form-check-input" name="inputType" id="rangeInput" value="1" checked="">
+                                <p class="noSelect">Range</p>
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <label class="form-check-label" class="noSelect">
+                                <input type="radio" class="form-check-input" name="inputType" id="numbersInput" value="2">
+                                <p class="noSelect">Numbers</p>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="w-100 mt-2" id="rangeForm">
+                        <div class="row w-100">
+                            <div class="col-md-2 d-flex align-items-center justify-content-end">
+                                <p class="m-0">From: </p>
+                            </div>
+                            <div class="col-md-4">
+                                <input type="text" class="form-control" placeholder="1" id="fromInput">
+                                <div class="invalid-feedback">It can't be older</div>
+                            </div>
+                            <div class="col-md-2 d-flex align-items-center justify-content-end">
+                                <p class="m-0">To: </p>
+                            </div>
+                            <div class="col-md-4">
+                                <input type="text" class="form-control" placeholder="0" id="toInput">
+                                <div class="invalid-feedback">It can't be less</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="w-100 mt-2 d-none" id="numbersForm">
+                        <div class="row w-100">
+                            <div class="col-md-4 d-flex align-items-center justify-content-end">
+                                <p class="m-0">Numbers: </p>
+                            </div>
+                            <div class="col-md-8">
+                                <input type="text" class="form-control" placeholder="separing by (,)" id="numbersFInput">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary w-100" id="newSendBtn"><i class="fa fa-send"></i></button>
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+
+<script src="./node_lib/jquery/dist/jquery.min.js"></script>
+<script src="./node_lib/popper.js/dist/umd/popper.min.js"></script>
+<script src="./node_lib/bootstrap/dist/js/bootstrap.min.js"></script>
+<script src="./node_lib/sweetalert2/dist/sweetalert2.min.js"></script>
+<script type="module" src="./scripts/scripts.js"></script>
+</body>
+</html>

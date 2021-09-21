@@ -1,0 +1,53 @@
+*{
+    box-sizing: border-box;
+}
+
+body{
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: initial;
+}
+
+#tableJ> tr> td, .noSelect{
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none; 
+}
+
+#tableJ> tr> td{
+    width: 20px !important;
+}
+
+body{
+    /* position: absolute; */
+    background-image: url(./../Assets/background.jpg);
+    background-position: top;
+    background-size: cover;
+    background-repeat: repeat-y;
+    /* filter: blur(4px);
+    -webkit-filter: blur(4px);
+    height: 100%;
+    width: 100%; */
+}
+
+#tableJ{
+    background-color: rgb(255,255,255,0.2);
+}
+
+.buttons{
+    color: white;
+    cursor: pointer;
+    text-shadow: 0 0 5px rgb(0,0,0);
+}
+
+.buttons:hover{
+    background-color: rgb(230, 230, 230);
+    color: black;
+    text-shadow: 0 0 0px rgb(0,0,0);
+}
+
+.buttonClick{
+    background-color: var(--bs-primary) !important;
+    color: white !important;
+}
