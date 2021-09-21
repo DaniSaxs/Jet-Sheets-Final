@@ -170,7 +170,7 @@ function all(cantF){
                 for (let i = 0; i < sheets.length - 1; i++) {
                     sheets[i].flag = true;
                     sheets[i].status = 0;
-                    sheets[i].validate = true;
+                    sheets[i].validate = false;
                     $(`#${sheets[i].id}`).removeClass('buttonClick');
                     $(`#${sheets[i].id}`).attr(`flag${sheets[i].id}`, "true");
                 }
