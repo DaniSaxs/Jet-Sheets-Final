@@ -127,7 +127,7 @@ function all(cantF){
             $(`#${sheets[i].id}`).removeClass('buttonClick');
             sheets[i].flag = true;
             sheets[i].status = 0;
-            // sheets[i].validate = true;
+            sheets[i].validate = true;
             sheets[database.length - 1].count -= 1;
             $(`#${sheets[i].id}`).attr(`flag${sheets[i].id}`, "true")
         }
@@ -480,7 +480,7 @@ function all(cantF){
                     sheetsFire2[i].status = database[i].status;
                     sheetsFire2[i].validate = database[i].validate;
                     flagAll = true;
-                }else if(database[i].status === 0 && sheetsFire2[i].status === 1 && database[i].validate === false){
+                }else if(database[i].status === 0 && sheetsFire2[i].status === 1 && database[i].validate === true){
                     flagAll = false;
                     sheets[i] = sheetsFire2[i];
                     selectSheets(i);
