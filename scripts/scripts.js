@@ -11,7 +11,7 @@ const firebaseConfig = {
     measurementId: "G-J71VD145J8"
 };
 
-console.warn('v6');
+console.warn('v7');
 
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
@@ -504,16 +504,21 @@ function all(cantF){
             sheetsFire2 = docSnap.data();
             for (let i = 0; i < database.length - 1; i++) {
                 if(database[i].status === 1 && sheetsFire2[i].status === 0 && database[i].validate === false){
+                    console.log('1');
                     sheetsFire2[i].flag = database[i].flag;
                     sheetsFire2[i].status = database[i].status;
                     sheetsFire2[i].validate = database[i].validate;
                     flagAll = true;
-                }else if(database[i].status === 0 && sheetsFire2[i].status === 1 && sheetsFire2[i].validate === false){
+                }
+                
+                if(database[i].validate === false && sheetsFire2[i].validate === true){
+                    console.log('2');
                     flagAll = false;
                     sheets[i] = sheetsFire2[i];
                     selectSheets(i);
                 }
-                if(database[i].validate === true){
+                if(database[i].validate === true && sheetsFire2[i].validate === false){
+                    console.log('3');
                     sheetsFire2[i].flag = database[i].flag;
                     sheetsFire2[i].status = database[i].status;
                     sheetsFire2[i].validate = database[i].validate;
@@ -525,7 +530,7 @@ function all(cantF){
                 await updateDoc(docRef, sheetsFire2);
             }
             Swal.close();
-            console.log(sheetsFire2);
+            // console.log(sheetsFire2);
             console.log('Datos Actualizados');
         } else {
         console.log("No such document!");
