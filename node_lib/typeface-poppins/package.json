@@ -1,0 +1,48 @@
+{
+  "_from": "typeface-poppins",
+  "_id": "typeface-poppins@1.1.13",
+  "_inBundle": false,
+  "_integrity": "sha512-VLNaET8kK7M3gPGjtKhr4/Iw6aseM2FLdiEGevlqXWD9b8QlzqZC4ro7sP78L9HJnOo2SUVvwJUeCn82gBcNqw==",
+  "_location": "/typeface-poppins",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "tag",
+    "registry": true,
+    "raw": "typeface-poppins",
+    "name": "typeface-poppins",
+    "escapedName": "typeface-poppins",
+    "rawSpec": "",
+    "saveSpec": null,
+    "fetchSpec": "latest"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/typeface-poppins/-/typeface-poppins-1.1.13.tgz",
+  "_shasum": "a80b6f14a2a70624eb2eb833fe5559507a8f5651",
+  "_spec": "typeface-poppins",
+  "_where": "C:\\Users\\danie\\Desktop\\Jet Sheets v2",
+  "author": {
+    "name": "Kyle Mathews",
+    "email": "mathews.kyle@gmail.com"
+  },
+  "bundleDependencies": false,
+  "deprecated": false,
+  "description": "Poppins typeface",
+  "keywords": [
+    "typeface",
+    "font",
+    "font family",
+    "google fonts",
+    "poppins"
+  ],
+  "license": "MIT",
+  "main": "index.css",
+  "name": "typeface-poppins",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/KyleAMathews/typefaces/tree/master/packages/poppins"
+  },
+  "version": "1.1.13"
+}

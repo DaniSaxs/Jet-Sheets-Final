@@ -10,15 +10,29 @@
 <link rel="stylesheet" href="./node_lib/font-awesome/css/font-awesome.min.css">
 <link rel="stylesheet" href="./node_lib/sweetalert2/dist/sweetalert2.min.css">
 <link rel="stylesheet" href="./node_lib/hover.css/css/hover-min.css">
+<link rel="stylesheet" href="./node_lib/animate.css/animate.min.css">
+<link rel="stylesheet" href="./node_lib/typeface-poppins/index.css">
 <link rel="stylesheet" href="./styles/styles.css">
 <title>Jet Sheets</title>
 </head>
 <body>
 
-    <!-- <div class="bg-image"></div> -->
+    <div class="preloader animate__animated animate__flipOutY">
+        <div class="loader">
+            <div class="inner one"></div>
+            <div class="inner two"></div>
+            <div class="inner three"></div>
+        </div>
+        <div class="position-absolute animate__animated animate__pulse d-flex justify-content-center align-items-center" style="overflow:hidden; box-shadow: 0 0 20px 1px rgba(0,0,0,0.5) inset; border: 5px solid #ffffff; width: 150px; height: 150px; background: white; border-radius: 100%; animation-iteration-count: infinite;">
+            <img src="./Assets/logo.ico" style="width: 150%; filter: drop-shadow(2px 4px 6px black);">
+        </div>
+        <div class="position-absolute" style="top: 10px; left: 0;">
+            <small class="m-3 mb-0 text-white"><i class="fa fa-plane"></i> ©DaniSaxs - 2021</small>
+        </div>
+    </div>
 
     <div class="w-100 d-flex mt-4 justify-content-center position-relative">
-        <a href="./index.html" title="Inicio" class="logo position-absolute hvr-grow-rotate d-flex justify-content-center align-items-center" style="width: 60px; height: 60px; border: 2px solid white; overflow: hidden; border-radius: 100%; box-shadow: 0 0 10px 1px rgba(0,0,0,0.5);">
+        <a href="./index.html" title="Inicio" class="logo position-absolute hvr-bob d-flex justify-content-center align-items-center" style="width: 60px; height: 60px; border: 2px solid white; overflow: hidden; border-radius: 100%; box-shadow: 0 0 10px 1px rgba(0,0,0,0.5);">
             <img src="./Assets/logo.ico"style="width: 140%">
         </a>
     </div>
@@ -26,14 +40,14 @@
     <div class="container px-4">
         <div class="row">
             <div class="col-md-5 d-flex justify-content-center align-items-center">
-                <button class="btn btn-danger hvr-wobble-horizontal" id="removeAll"><i class="fa fa-trash"></i> Eliminar Todo</button>
-                <button class="btn btn-success hvr-wobble-skew mx-2" id="downloadButton"><i class="fa fa-download"></i> Crear Txt</button>
-                <label for="inputfile" class="btn btn-info hvr-wobble-skew"><i class="fa fa-file-text"></i> Importar Txt</label>
+                <button class="btn btn-danger hvr-icon-buzz-out" id="removeAll"><i class="fa fa-trash hvr-icon"></i> Eliminar Todo</button>
+                <button class="btn btn-success hvr-icon-down mx-2" id="downloadButton"><i class="fa fa-download hvr-icon"></i> Crear Txt</button>
+                <label for="inputfile" class="btn btn-info hvr-icon-up"><i class="fa fa-file-text hvr-icon"></i> Importar Txt</label>
                 <input class="btn btn-info d-none" type="file" accept=".txt" name="inputfile" id="inputfile">
             </div>
             <div class="col-md-4 offset-md-3 d-flex justify-content-center align-items-center">
                 <button class="btn btn-info hvr-icon-spin" id="dbSync"><i class="fa fa-refresh hvr-icon"></i> Sincronizar</button>
-                <button class="btn btn-primary m-4 hvr-wobble-skew" data-bs-toggle="modal" data-bs-target="#newForm"><i class="fa fa-plus-circle"></i> Nuevo</button>
+                <button class="btn btn-primary m-4 hvr-icon-pulse-grow" data-bs-toggle="modal" data-bs-target="#newForm"><i class="fa fa-plus-circle hvr-icon"></i> Nuevo</button>
                 <h5 class="m-0 text-white"><i class="fa fa-check-circle text-primary" style="text-shadow: 0 0 10px rgba(255,255,255,1);"></i> : <span style="text-shadow: 0 0 10px rgba(0,0,0,1);" id="counter"></span></h5>
             </div>
         </div>
@@ -64,27 +78,27 @@
                         <div class="form-check mr-2">
                             <label class="form-check-label">
                                 <input type="radio" class="form-check-input" name="inputType" id="rangeInput" value="1" checked="">
-                                <p class="noSelect">Range</p>
+                                <p class="noSelect">Rango</p>
                             </label>
                         </div>
                         <div class="form-check">
                             <label class="form-check-label" class="noSelect">
                                 <input type="radio" class="form-check-input" name="inputType" id="numbersInput" value="2">
-                                <p class="noSelect">Numbers</p>
+                                <p class="noSelect">Números</p>
                             </label>
                         </div>
                     </div>
                     <div class="w-100 mt-2" id="rangeForm">
                         <div class="row w-100">
                             <div class="col-md-2 d-flex align-items-center justify-content-end">
-                                <p class="m-0">From: </p>
+                                <p class="m-0">Desde: </p>
                             </div>
                             <div class="col-md-4">
                                 <input type="text" class="form-control" placeholder="1" id="fromInput">
                                 <div class="invalid-feedback">It can't be older</div>
                             </div>
                             <div class="col-md-2 d-flex align-items-center justify-content-end">
-                                <p class="m-0">To: </p>
+                                <p class="m-0">Hasta: </p>
                             </div>
                             <div class="col-md-4">
                                 <input type="text" class="form-control" placeholder="0" id="toInput">
@@ -95,10 +109,10 @@
                     <div class="w-100 mt-2 d-none" id="numbersForm">
                         <div class="row w-100">
                             <div class="col-md-4 d-flex align-items-center justify-content-end">
-                                <p class="m-0">Numbers: </p>
+                                <p class="m-0">Números: </p>
                             </div>
                             <div class="col-md-8">
-                                <input type="text" class="form-control" placeholder="separing by (,)" id="numbersFInput">
+                                <input type="text" class="form-control" placeholder="Separados por (,)" id="numbersFInput">
                             </div>
                         </div>
                     </div>

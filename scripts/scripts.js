@@ -11,7 +11,14 @@ const firebaseConfig = {
     measurementId: "G-J71VD145J8"
 };
 
-console.warn('v10.1');
+$(window).on('load', function(){
+    $('.preloader').css('animation-play-state','running');
+    setTimeout(() => {
+        $('.preloader').css('display','none');
+    }, 1000);
+});
+
+console.warn('v11');
 
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
