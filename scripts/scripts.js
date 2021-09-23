@@ -138,7 +138,7 @@ function all(cantF){
         }
         localStorage.setItem('sheets',JSON.stringify(sheets));
         $('#counter').html(sheets[database.length - 1].count);
-        $('#output').html(database.length - counter.count - 1);
+        $('#output').html(database.length - sheets[database.length - 1].count - 1);
     }
 
     for (let i = 0; i < sheets.length - 1; i++) {
@@ -264,10 +264,9 @@ function all(cantF){
                         $(`#${newDatabase[i].id}`).removeClass('buttonClick');
                     }
                 }
-                console.log(newDatabase, counter);
                 localStorage.setItem('sheets',JSON.stringify(newDatabase));
                 $('#counter').html(counter.count);
-                $('#output').html(database.length - counter.count - 1);
+                $('#output').html(newDatabase.length - counter.count - 1);
                 Swal.fire({
                     title : 'Información Compatible',
                     text: 'Datos importados correctamente',
@@ -543,8 +542,10 @@ function all(cantF){
                 sheetsFire2[database.length - 1].counter = database[database.length - 1].count;
                 await updateDoc(docRef, sheetsFire2);
             }
+
+            $('#output').html(sheets.length - database[database.length - 1].count - 1);
+
             Swal.close();
-            // console.log(sheetsFire2);
             console.log('Datos Actualizados');
         } else {
         console.log("No such document!");
