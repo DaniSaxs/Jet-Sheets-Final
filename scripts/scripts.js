@@ -18,7 +18,39 @@ $(window).on('load', function(){
     }, 1000);
 });
 
-console.warn('v11');
+console.warn('v12');
+
+var internetFlag = true;
+
+window.addEventListener("load", () => {
+    internetConnection(navigator.onLine ? "online" : "offline");
+});
+
+window.addEventListener("offline", (event) => {
+    internetConnection(event.type);
+});
+  
+window.addEventListener("online", (event) => {
+    internetConnection(event.type);
+});
+
+$('body').append(`
+    <div class="position-fixed bg-white px-2 pt-2" style="left:1%; bottom:0; border-radius:100px 100px 0 0; box-shadow: 0 0 10px 1px rgba(0,0,0,0.6)">
+        <i id="connection" class="fa fa-wifi"></i>
+    </div>
+`);
+
+function internetConnection(status){
+    if(status === "online"){
+        internetFlag = true;
+        $('#connection').addClass('text-success');
+        $('#connection').removeClass('text-danger');
+    }else{
+        internetFlag = false;
+        $('#connection').addClass('text-danger');
+        $('#connection').removeClass('text-success');
+    }
+}
 
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
@@ -162,6 +194,18 @@ function all(cantF){
     };
 
     $('#removeAll').click(() => {
+
+        if(!internetFlag){
+            $('#deleteText').html("No hay internet, se está eliminando solo la Tabla");
+            Swal.fire({
+                title: 'No hay Internet!',
+                html : 'Conéctate a Internet para continuar!',
+                icon : 'error',
+                timer: 1500,
+                showConfirmButton: false
+            });
+            return false;
+        }
 
         Swal.fire({
             title: 'Estás seguro(a)?',
@@ -464,6 +508,19 @@ function all(cantF){
     var sheetsFire = {};
 
     $('#dbSync').click(async () => {
+
+        if(!internetFlag){
+            $('#deleteText').html("No hay internet, se está eliminando solo la Tabla");
+            Swal.fire({
+                title: 'No hay Internet!',
+                html : 'Conéctate a Internet para continuar!',
+                icon : 'error',
+                timer: 1500,
+                showConfirmButton: false
+            });
+            return false;
+        }
+
         database = JSON.parse(localStorage.getItem('sheets'));
         sheets = database;
         Swal.fire({
