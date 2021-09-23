@@ -11,7 +11,7 @@ const firebaseConfig = {
     measurementId: "G-J71VD145J8"
 };
 
-console.warn('v9');
+console.warn('v10');
 
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
@@ -244,6 +244,18 @@ function all(cantF){
                 newDatabase = JSON.parse(fr.result);
                 counter = newDatabase[newDatabase.length - 1];
                 for(let i = 0; i < newDatabase.length - 1; i++){
+
+                    // ---------------------------------------------
+
+                    newDatabase[i].validate = false;
+                    if(newDatabase[i].flag === false){
+                        newDatabase[i].status = 1;
+                    }else{
+                        newDatabase[i].status = 0;
+                    }
+
+                    // ---------------------------------------------
+
                     $(`#${newDatabase[i].id}`).attr(`flag${newDatabase[i].id}`, newDatabase[i].flag);
                     if($(`#${newDatabase[i].id}`).attr(`flag${newDatabase[i].id}`) === "false"){
                         $(`#${newDatabase[i].id}`).addClass('buttonClick');
@@ -252,6 +264,7 @@ function all(cantF){
                         $(`#${newDatabase[i].id}`).removeClass('buttonClick');
                     }
                 }
+                console.log(newDatabase, counter);
                 localStorage.setItem('sheets',JSON.stringify(newDatabase));
                 $('#counter').html(counter.count);
                 $('#output').html(database.length - counter.count - 1);
