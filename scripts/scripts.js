@@ -11,7 +11,7 @@ const firebaseConfig = {
     measurementId: "G-J71VD145J8"
 };
 
-console.warn('v8');
+console.warn('v9');
 
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
@@ -511,14 +511,14 @@ function all(cantF){
                     flagAll = true;
                 }
                 
-                if(database[i].status === 0 && sheetsFire2[i].status === 1 && sheetsFire2[i].validate === false && database[i].validate === false){
+                if(database[i].status === 0 && sheetsFire2[i].status === 1 && sheetsFire2[i].validate === false && database[i].validate === false || database[i].status === 1 && sheetsFire2[i].status === 0 && database[i].validate === false && sheetsFire2[i].validate === true || database[i].status === 0 && sheetsFire2[i].status === 1 && database[i].validate === true && sheetsFire2[i].validate === false){
                     console.log('2');
                     flagAll = false;
                     sheets[i] = sheetsFire2[i];
                     selectSheets(i);
                 }
 
-                if(database[i].validate === true && sheetsFire2[i].validate === false || database[i].validate === false && sheetsFire2[i].validate === true){
+                if(database[i].status === 0 && sheetsFire2[i].status === 1 && database[i].validate === true && sheetsFire2[i].validate === false){
                     console.log('3');
                     sheetsFire2[i].flag = database[i].flag;
                     sheetsFire2[i].status = database[i].status;
