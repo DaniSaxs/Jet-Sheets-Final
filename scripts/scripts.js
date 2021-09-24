@@ -18,7 +18,7 @@ $(window).on('load', function(){
     }, 1000);
 });
 
-console.warn('v12');
+console.warn('v12.1');
 
 var internetFlag = true;
 
@@ -243,7 +243,7 @@ function all(cantF){
                 sheets[database.length - 1].count = 0;
                 localStorage.setItem('sheets',JSON.stringify(sheets));
                 $('#counter').html(sheets[database.length - 1].count);
-                $('#output').html(database.length - counter.count - 1);
+                $('#output').html(database.length - sheets[database.length - 1].count - 1);
 
                 var id = "";
 
