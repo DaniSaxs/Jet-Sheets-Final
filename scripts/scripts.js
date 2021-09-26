@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.1/firebase-app.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.0.1/firebase-analytics.js";
-import { getFirestore, collection, getDocs, doc, setDoc, updateDoc, getDoc  } from "https://www.gstatic.com/firebasejs/9.0.1/firebase-firestore.js";
+import { getFirestore, collection, getDocs, doc, setDoc, updateDoc, getDoc, query, where  } from "https://www.gstatic.com/firebasejs/9.0.1/firebase-firestore.js";
 const firebaseConfig = {
     apiKey: "AIzaSyCVgukzI_MAJgxBxOv3q0KAFKaWkm6ryUc",
     authDomain: "jet-sheets.firebaseapp.com",
@@ -18,7 +18,7 @@ $(window).on('load', function(){
     }, 1000);
 });
 
-console.warn('v12.1');
+console.warn('v13');
 
 var internetFlag = true;
 
@@ -83,9 +83,20 @@ window.addEventListener('DOMLoadedContent', checkForWindowResize);
 
 function all(cantF){
 
+    function internetAlert(){
+        Swal.fire({
+            title: 'No hay Internet!',
+            html : 'Conéctate a Internet para continuar!',
+            icon : 'error',
+            timer: 1500,
+            showConfirmButton: false
+        });
+    }
+
     var elements = 256;
 
     var sheets = [];
+    var user = {id: '', username: '', status: 0};
 
     for (let i = 0; i <= elements - 1; i++) {
         sheets[i] = {id: i + 1, flag: true, status: 0, validate: false};
@@ -103,6 +114,18 @@ function all(cantF){
 
     var database = JSON.parse(localStorage.getItem('sheets'));
     var counter = database[database.length - 1];
+    
+    if(localStorage.getItem('user') === null){
+        localStorage.setItem('user',JSON.stringify(user));
+    }else{
+        localStorage.getItem('user');
+    }
+
+    var userStorage = JSON.parse(localStorage.getItem('user'));
+
+    var sessionUser = userStorage.username;
+    var sessionId = userStorage.id;
+    var sessionStatus = userStorage.status;
 
     $('#counter').html(counter.count);
     $('#output').html(database.length - counter.count - 1);
@@ -177,7 +200,9 @@ function all(cantF){
         }
         localStorage.setItem('sheets',JSON.stringify(sheets));
         $('#counter').html(sheets[database.length - 1].count);
+        $('#sheetsTxtLogout').html(sheets[database.length - 1].count);
         $('#output').html(database.length - sheets[database.length - 1].count - 1);
+        $('#sheets2TxtLogout').html(database.length - sheets[database.length - 1].count - 1);
     }
 
     for (let i = 0; i < sheets.length - 1; i++) {
@@ -197,19 +222,20 @@ function all(cantF){
 
         if(!internetFlag){
             $('#deleteText').html("No hay internet, se está eliminando solo la Tabla");
-            Swal.fire({
-                title: 'No hay Internet!',
-                html : 'Conéctate a Internet para continuar!',
-                icon : 'error',
-                timer: 1500,
-                showConfirmButton: false
-            });
+            internetAlert();
             return false;
         }
 
         Swal.fire({
             title: 'Estás seguro(a)?',
-            text: "Si tienes Base de Datos también se eliminará",
+            html: `
+                <div class="d-flex justify-content-center align-items-center flex-column">
+                    <p class="m-0">Se eliminarán todos los datos de la Tabla!</p>
+                    <div class="form-check mt-2" id="checkDatabaseBox">
+                        
+                    </div>
+                </div>
+            `,
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
@@ -219,16 +245,7 @@ function all(cantF){
         }).then(async (result) => {
             if (result.isConfirmed) {
 
-                Swal.fire({
-                    title: 'Eliminando',
-                    html: `<p id="deleteText">No hay Base de Datos, por lo tanto, sólo se está eliminando la Tabla!</p>`,
-                    allowOutsideClick: false,
-                    didOpen: () => {
-                        Swal.showLoading()
-                    }
-                });
-
-                const getValues = await getDocs(collection(db, "values"));
+                var checked = $('#removeDatabaseCheck').prop('checked')
 
                 sheets = database;
                 var sheetsRemove = {};
@@ -244,16 +261,28 @@ function all(cantF){
                 localStorage.setItem('sheets',JSON.stringify(sheets));
                 $('#counter').html(sheets[database.length - 1].count);
                 $('#output').html(database.length - sheets[database.length - 1].count - 1);
+                $('#sheetsTxtLogout').html(sheets[database.length - 1].count);
+                $('#sheets2TxtLogout').html(database.length - sheets[database.length - 1].count - 1);
 
-                var id = "";
+                if(checked){
+                    const getValues = await getDocs(collection(db, `values${sessionId}`));
+                    var id = "";
 
-                if (getValues.size > 0) {
-                    $('#deleteText').html("Se está eliminando la Tabla y la Base de datos!");
-                    getValues.forEach(doc => {
-                        id = doc.id;
-                    });
-                    const docRef = await doc(db, "values", `${id}`);
-                    await updateDoc(docRef, sheetsRemove);
+                    if (getValues.size > 0) {
+                        Swal.fire({
+                            title: 'Eliminando',
+                            text: `Se está eliminando la Tabla y la Base de datos...`,
+                            allowOutsideClick: false,
+                            didOpen: () => {
+                                Swal.showLoading();
+                            }
+                        });
+                        getValues.forEach(doc => {
+                            id = doc.id;
+                        });
+                        const docRef = await doc(db, `values${sessionId}`, `${id}`);
+                        await updateDoc(docRef, sheetsRemove);
+                    }
                 }
 
                 Swal.fire({
@@ -266,6 +295,17 @@ function all(cantF){
             }
 
         });
+
+        if(sessionStatus === 1){
+            $('#checkDatabaseBox').html(`
+                <input class="form-check-input" type="checkbox" value="" id="removeDatabaseCheck" checked="">
+                <label class="form-check-label" for="removeDatabaseCheck">
+                    Reestablecer Base de Datos
+                </label>
+            `);
+        }else{
+            $('#checkDatabaseBox').remove();
+        }
 
     });
 
@@ -318,6 +358,8 @@ function all(cantF){
                 localStorage.setItem('sheets',JSON.stringify(newDatabase));
                 $('#counter').html(counter.count);
                 $('#output').html(newDatabase.length - counter.count - 1);
+                $('#sheetsTxtLogout').html(counter.count);
+                $('#sheets2TxtLogout').html(newDatabase.length - counter.count - 1);
                 Swal.fire({
                     title : 'Información Compatible',
                     text: 'Datos importados correctamente',
@@ -495,8 +537,8 @@ function all(cantF){
         $('#newForm').modal('hide');
     });
 
-    var myModalEl = document.getElementById('newForm');
-    myModalEl.addEventListener('hidden.bs.modal', function () {
+    var newFormModal = document.getElementById('newForm');
+    newFormModal.addEventListener('hidden.bs.modal', function () {
         $('#fromInput').val("");
         $('#toInput').val("");
         $('#numbersFInput').val("");
@@ -504,20 +546,44 @@ function all(cantF){
             $('body').css({'overflow-y' : 'hidden'});
         }
     });
+
+    var loginModal = document.getElementById('loginModal');
+    loginModal.addEventListener('hidden.bs.modal', function () {
+        if (window.innerWidth > 1024) {
+            $('body').css({'overflow-y' : 'hidden'});
+        }
+    });
+
+    var logoutModal = document.getElementById('logoutModal');
+    logoutModal.addEventListener('hidden.bs.modal', function () {
+        if (window.innerWidth > 1024) {
+            $('body').css({'overflow-y' : 'hidden'});
+        }
+    });
     
     var sheetsFire = {};
 
-    $('#dbSync').click(async () => {
+    // Login
+
+    var showFlag = true;
+
+    $('#showPassLogin').click(() => {
+        if(showFlag){
+            $('#loginPass').attr('type','text');
+            $('#showPassLogin').html('<i class="fa fa-eye-slash"></i>');
+            showFlag = false;
+        }else{
+            $('#loginPass').attr('type','password');
+            $('#showPassLogin').html('<i class="fa fa-eye"></i>');
+            showFlag = true;
+        }
+    });
+
+    async function syncAllData(){
 
         if(!internetFlag){
             $('#deleteText').html("No hay internet, se está eliminando solo la Tabla");
-            Swal.fire({
-                title: 'No hay Internet!',
-                html : 'Conéctate a Internet para continuar!',
-                icon : 'error',
-                timer: 1500,
-                showConfirmButton: false
-            });
+            internetAlert();
             return false;
         }
 
@@ -531,7 +597,7 @@ function all(cantF){
                 Swal.showLoading()
             }
         });
-        var getValues = await getDocs(collection(db, "values"));
+        var getValues = await getDocs(collection(db, `values${sessionId}`));
         var id = "";
         Swal.close();
         if(getValues.size === 0){
@@ -547,20 +613,20 @@ function all(cantF){
                 sheetsFire[i] = database[i];
             }
             sheetsFire[elements] = {counter: countAll};
-            await setDoc(doc(collection(db, "values")), sheetsFire);
+            await setDoc(doc(collection(db, `values${sessionId}`)), sheetsFire);
             Swal.close();
             console.log('All Inserted!');
         }else{
             console.log('All Updated!');
         }
 
-        getValues = await getDocs(collection(db, "values"));
+        getValues = await getDocs(collection(db, `values${sessionId}`));
 
         getValues.forEach(doc => {
             id = doc.id;
         });
 
-        const docRef = await doc(db, "values", `${id}`);
+        const docRef = await doc(db, `values${sessionId}`, `${id}`);
         const docSnap = await getDoc(docRef);
 
         Swal.fire({
@@ -608,6 +674,7 @@ function all(cantF){
             }
 
             $('#output').html(sheets.length - database[database.length - 1].count - 1);
+            $('#sheets2TxtLogout').html(sheets.length - database[database.length - 1].count - 1);
 
             Swal.close();
             console.log('Datos Actualizados');
@@ -616,6 +683,203 @@ function all(cantF){
         return false;
         }
     
+    };
+
+    $('#loginForm').submit(async e => {
+        e.preventDefault();
+
+        var loginEmail = $('#loginEmail');
+        var loginPass = $('#loginPass');
+        var userId = "";
+
+        if(!internetFlag){
+            internetAlert();
+            loginEmail.removeClass('is-invalid');
+            loginEmail.removeClass('is-valid');
+            loginPass.removeClass('is-invalid');
+            return false;
+        }
+
+        if(loginEmail.val() === ""){
+            loginEmail.addClass("is-invalid");
+            $('#errorMessageUser').html("Escribe un Nombre de Usuario!");
+            loginEmail.focus();
+            return false;
+        }
+
+        Swal.fire({
+            title: 'Comprobando Datos',
+            html: `Espere Por Favor...`,
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading()
+            }
+        });
+
+        const q = query(collection(db, "users"), where("username", "==", loginEmail.val()));
+
+        const querySnapshot = await getDocs(q);
+
+        Swal.close();
+
+        if(querySnapshot.size > 0){
+            var pass = "";
+            loginEmail.removeClass("is-invalid");
+            loginEmail.addClass("is-valid");
+            querySnapshot.forEach((doc) => {
+                userId = doc.id;
+                pass = doc.data().password;
+            });
+
+            
+            // var encryptedPass = CryptoJS.AES.encrypt(loginPass.val(), "Secret Passphrase");
+            var decryptedPass = CryptoJS.AES.decrypt(pass, "Secret Passphrase").toString(CryptoJS.enc.Utf8);
+
+            if(loginPass.val() != 0){
+                if(decryptedPass === loginPass.val()){
+                    loginEmail.removeClass("is-invalid");
+                    loginEmail.removeClass("is-valid");
+                    loginPass.removeClass("is-invalid");
+                    user = {id: userId, username: loginEmail.val(), status: 1};
+                    localStorage.setItem("user", JSON.stringify(user));
+
+                    console.log('Inicio de Sesión Exitoso!');
+
+                    Swal.fire({
+                        title: `<p class="text-capitalize">bienvenido ${loginEmail.val()}!</p>`,
+                        html : 'Inicio de Sesión Exitoso!',
+                        icon : 'success',
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
+
+                    userBtn();
+
+                    loginEmail.val("");
+                    loginPass.val("");
+                    $('#loginModal').modal('hide');
+
+                }else{
+                    loginPass.addClass("is-invalid");
+                    $('#errorMessagePass').html("Contraseña Incorrecta!");
+                }
+            }else{
+                loginPass.addClass("is-invalid");
+                $('#errorMessagePass').html("Escribe una Contraseña!");
+                loginPass.focus();
+            }
+
+        }else{
+            loginEmail.addClass("is-invalid");
+            $('#errorMessageUser').html("El Usuario no Existe!");
+        }
+
+    });
+
+    $('#loginEmail').keyup(() => {
+        $('#loginEmail').removeClass("is-invalid");
+        $('#loginEmail').removeClass("is-valid");
+    });
+
+    $('#loginPass').keyup(() => {
+        $('#loginPass').removeClass("is-invalid");
+    });
+
+    function userBtn(){
+        userStorage = JSON.parse(localStorage.getItem('user'));
+        sessionUser = userStorage.username;
+        sessionId = userStorage.id;
+        sessionStatus = userStorage.status;
+        if(sessionStatus === 1){
+
+            $('#userTxtLogout').html(sessionUser);
+            $('#sheetsTxtLogout').html(sheets[database.length - 1].count);
+            $('#sheets2TxtLogout').html(database.length - sheets[database.length - 1].count - 1);
+
+            $('#loginBtn').remove();
+
+            $('body').append(`
+                <div class="position-absolute" id="logoutBtn" style="right:10px; top: 10px;">
+                    <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#logoutModal" style="border: 3px solid white; width: 50px; height: 50px; border-radius: 100%; box-shadow: 0 0 10px 1px rgba(0,0,0,0.8);">
+                        <i class="fa fa-sign-out"></i>
+                    </button>
+                </div>
+            `);
+
+            $('#syncButton').append(`
+                <button class="btn btn-info hvr-icon-spin" id="dbSync"><i class="fa fa-refresh hvr-icon"></i> Sincronizar</button>
+            `);
+
+            $('#dbSync').click(() => {
+                syncAllData();
+            });
+
+        }else{
+            $('#logoutBtn').remove();
+            $('body').append(`
+                <div class="position-absolute" id="loginBtn" style="right:10px; top: 10px;">
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#loginModal" style="border: 3px solid white; width: 50px; height: 50px; border-radius: 100%; box-shadow: 0 0 10px 1px rgba(0,0,0,0.8);">
+                        <i class="fa fa-user"></i>
+                    </button>
+                </div>
+            `);
+            $('#syncButton').html("");
+        }
+    }
+
+    userBtn();
+
+    $('#logoutFinalBtn').click(() => {
+        if(!internetFlag){
+            internetAlert();
+            return false;
+        }
+
+        Swal.fire({
+            title: 'Deseas Cerrar tu Sesión Actual?',
+            text: "Recuerda Sincronizar tus Datos antes de hacerlo, de lo contrario, los cambios realizados se perderán!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sí, Cerrar Sesión!',
+            cancelButtonText: 'Cancelar!'
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+
+                user = {id: '', username: '', status: 0};
+                localStorage.setItem('user', JSON.stringify(user));
+                $('#logoutModal').modal('hide');
+                userBtn();
+
+                sheets = database;
+                var sheetsRemove = {};
+                for (let i = 0; i < sheets.length - 1; i++) {
+                    sheets[i].flag = true;
+                    sheets[i].status = 0;
+                    sheets[i].validate = false;
+                    $(`#${sheets[i].id}`).removeClass('buttonClick');
+                    $(`#${sheets[i].id}`).attr(`flag${sheets[i].id}`, "true");
+                    sheetsRemove[i] = sheets[i];
+                }
+                sheets[database.length - 1].count = 0;
+                localStorage.setItem('sheets',JSON.stringify(sheets));
+                $('#counter').html(sheets[database.length - 1].count);
+                $('#output').html(database.length - sheets[database.length - 1].count - 1);
+                $('#sheetsTxtLogout').html(sheets[database.length - 1].count);
+                $('#sheets2TxtLogout').html(database.length - sheets[database.length - 1].count - 1);
+
+                Swal.fire({
+                    title: 'Sesión Cerrada!',
+                    html : 'Ahora no podrás sincronizar tus datos en la Nube!',
+                    icon : 'success',
+                    timer: 2000,
+                    showConfirmButton: false
+                });
+            }
+
+        });
+
     });
 
 }

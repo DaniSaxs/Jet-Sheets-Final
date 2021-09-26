@@ -37,6 +37,12 @@
         </a>
     </div>
 
+    <div class="position-absolute" id="loginBtn" style="right:10px; top: 10px;">
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#loginModal" style="border: 3px solid white; width: 50px; height: 50px; border-radius: 100%; box-shadow: 0 0 10px 1px rgba(0,0,0,0.8);">
+            <i class="fa fa-user"></i>
+        </button>
+    </div>
+
     <div class="container px-4">
         <div class="row">
             <div class="col-md-5 d-flex justify-content-center align-items-center">
@@ -46,7 +52,9 @@
                 <input class="btn btn-info d-none" type="file" accept=".txt" name="inputfile" id="inputfile">
             </div>
             <div class="col-md-4 offset-md-3 d-flex justify-content-center align-items-center">
-                <button class="btn btn-info hvr-icon-spin" id="dbSync"><i class="fa fa-refresh hvr-icon"></i> Sincronizar</button>
+                <div id="syncButton">
+                    
+                </div>
                 <button class="btn btn-primary m-4 hvr-icon-pulse-grow" data-bs-toggle="modal" data-bs-target="#newForm"><i class="fa fa-plus-circle hvr-icon"></i> Nuevo</button>
                 <h5 class="m-0 text-white"><i class="fa fa-check-circle text-primary" style="text-shadow: 0 0 10px rgba(255,255,255,1);"></i> : <span style="text-shadow: 0 0 10px rgba(0,0,0,1);" id="counter"></span></h5>
             </div>
@@ -65,6 +73,7 @@
                 
             </div>
         </div>
+
         <!-- Modal Form New-->
         <div class="modal fade" id="newForm" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
@@ -123,12 +132,77 @@
             </div>
             </div>
         </div>
+
+        <!-- Login Modal -->
+        <div class="modal fade" id="loginModal" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header d-flex justify-content-center">
+                <h5 class="modal-title"><i class="fa fa-user mr-2"></i> Iniciar Sesión</h5>
+                <button data-bs-dismiss="modal" class="btn btn-danger position-absolute" style="width: 50px; height: 50px; right: -25px; top: -25px; border-radius: 100%; box-shadow: 0 0 10px 1px rgba(0,0,0,0.5);"><i class="fa fa-close"></i></button>
+                </div>
+                <form id="loginForm">
+                    <div class="modal-body">
+                        <div class="w-100 d-flex align-items-center flex-column mb-3">
+                            <div class="mb-2 d-flex justify-content-center align-items-center" style="width: 100px; height: 100px; border-radius: 100%; box-shadow: 0 0 10px 1px rgba(0,0,0,0.3); overflow: hidden;">
+                                <img src="./Assets/user.png" class="h-100">
+                            </div>
+                            <h3 class="text-capitalize m-0">Usuario</h3>
+                        </div>
+                        <div class="form-group">
+                            <div class="input-group mb-2">
+                                <input id="loginEmail" type="text" class="form-control" placeholder="Usuario o Email" style="height: 45px; border-radius: 25px;">
+                                <div id="errorMessageUser" class="invalid-feedback"></div>
+                                <div class="valid-feedback">Usuario Encontrado!</div>
+                            </div>
+                            <div class="input-group">
+                                <input id="loginPass" type="password" class="form-control" placeholder="Contraseña" style="height: 45px; border-radius: 25px 0 0 25px;">
+                                <div class="input-group-append">
+                                    <button id="showPassLogin" type="button" class="btn btn-info px-3" style="height: 45px; border-radius: 0 25px 25px 0;"><i class="fa fa-eye"></i></button>
+                                </div>
+                                <div id="errorMessagePass" class="invalid-feedback">Contraseña Incorrecta!</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary w-100" style="height: 45px; border-radius: 25px;"><i class="fa fa-sign-in" style="font-size: 1.5em;"></i></button>
+                    </div>
+                </form>
+            </div>
+            </div>
+        </div>
+
+        <!-- Logout Modal -->
+        <div class="modal fade" id="logoutModal" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                <button data-bs-dismiss="modal" class="btn btn-danger position-absolute" style="width: 50px; height: 50px; right: -25px; top: -25px; border-radius: 100%; box-shadow: 0 0 10px 1px rgba(0,0,0,0.5);"><i class="fa fa-close"></i></button>
+                </div>
+                <div class="modal-body">
+                    <div class="w-100 d-flex align-items-center flex-column mb-3">
+                        <div class="mb-2 d-flex justify-content-center align-items-center" style="width: 100px; height: 100px; border-radius: 100%; box-shadow: 0 0 10px 1px rgba(0,0,0,0.3); overflow: hidden;">
+                            <img src="./Assets/user.png" class="h-100">
+                        </div>
+                        <h3 id="userTxtLogout" class="text-capitalize mb-2 display-6">usuario</h3>
+                        <p class="text-capitalize m-0">llevas <b id="sheetsTxtLogout"></b> Láminas Pegadas</p>
+                        <p class="text-capitalize m-0">Te falta pegar <b id="sheets2TxtLogout"></b> Láminas</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="logoutFinalBtn" class="btn btn-danger w-100 d-flex align-items-center justify-content-center" style="height: 45px; border-radius: 25px;"><i class="fa fa-sign-out" style="font-size: 1.5em;"></i><span class="mx-2">Cerrar Sesión</span></button>
+                </div>
+            </div>
+            </div>
+        </div>
+
     </div>
 
 <script src="./node_lib/jquery/dist/jquery.min.js"></script>
 <script src="./node_lib/popper.js/dist/umd/popper.min.js"></script>
 <script src="./node_lib/bootstrap/dist/js/bootstrap.min.js"></script>
 <script src="./node_lib/sweetalert2/dist/sweetalert2.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js" integrity="sha256-/H4YS+7aYb9kJ5OKhFYPUjSJdrtV6AeyJOtTkw6X72o=" crossorigin="anonymous"></script>
 <script type="module" src="./scripts/scripts.js"></script>
 </body>
 </html>
